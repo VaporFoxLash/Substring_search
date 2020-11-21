@@ -1,5 +1,8 @@
 
 def get_prefix_table(needle):
+    '''
+    Creatae a prefix table to search in the string
+    '''
     prefix_set = set()
     n = len(needle)
     prefix_table = [0] * n
@@ -17,8 +20,10 @@ def get_prefix_table(needle):
 
 
 def KMP_search(haystack, needle):
-    # m: The position within S where the prospective match for W begins
-    # i: Index of the currently considered character in W.
+    '''
+    m: The position within S where the prospective match for W begins
+    i: Index of the currently considered character in W.
+    '''
     haystack_len = len(haystack)
     needle_len = len(needle)
     if (needle_len > haystack_len) or (not haystack_len) or (not needle_len):
@@ -40,7 +45,61 @@ def KMP_search(haystack, needle):
         return -1
 
 
+NO_OF_CHARS = 256
+
+
+def badCharHeuristic(string, size):
+    '''
+    The preprocessing function for
+    Boyer Moore's bad character heuristic
+    '''
+
+    # Initialize all occurrence as -1
+    badChar = [-1] * NO_OF_CHARS
+
+    # Fill the actual value of last occurrence
+    for i in range(size):
+        badChar[ord(string[i])] = i
+
+    # retun initialized list
+    return badChar
+
+
+def search(txt, pat):
+    '''
+    A pattern searching function that uses Bad Character
+    Heuristic of Boyer Moore Algorithm
+    '''
+    m = len(pat)
+    n = len(txt)
+
+    # create the bad character list by calling
+    # the preprocessing function badCharHeuristic()
+    # for given pattern
+    badChar = badCharHeuristic(pat, m)
+
+    # s is shift of the pattern with respect to text
+    s = 0
+    while(s <= n - m):
+        j = m - 1
+
+        # Keep reducing index j of pattern while
+        # characters of pattern and text are matching
+        # at this shift s
+        while j >= 0 and pat[j] == txt[s + j]:
+            j -= 1
+
+        # If the pattern is present at current shift,
+        # then index j will become -1 after the above loop
+        if j < 0:
+            return s
+            s += (m - badChar[ord(txt[s + m])] if s + m < n else 1)
+        else:
+            s += max(1, j - badChar[ord(txt[s + j])])
+
+
 if __name__ == '__main__':
     needle = 'abcaby'
-    haystack = 'abxabcabcaby'
+    haystack = 'nabxabcabcabyl'
     print(KMP_search(haystack, needle))
+    search(haystack, needle)
