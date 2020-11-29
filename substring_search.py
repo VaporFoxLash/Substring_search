@@ -1,6 +1,18 @@
+"""
+These algorithm search for a pattern in a text,
+then return the location where the pattern is found in the text
+I used haystack for a full text(string) and
+needle for the pattern,
+in large files it's like finding a needle in a haystack.
+"""
+import time
 
-class BruteForce(object):
-    """docstring forBruteForce."""
+
+class Substring_search():
+    """
+    IT searches whether a string of length n contains a substring of length m.
+    If it does, we want to know its position in the string.
+    """
 
     def __init__(self, haystack, needle, start_indx, found_indx):
         self.haystack = haystack
@@ -8,7 +20,8 @@ class BruteForce(object):
         self.start_indx = start_indx
         self.found_indx = found_indx
 
-    def brute_force(self, needle, haystack, start_indx = 0, found_indx = 0):
+    def brute_force(self, needle, haystack, start_indx=0, found_indx=0):
+        #
         if len(haystack) == 0:
             return found_indx
 
@@ -21,26 +34,18 @@ class BruteForce(object):
                 if i == j:
                     found_indx += start_indx - 1
                     return self.brute_force(needle[start_indx:],
-                    haystack[1:], 0, found_indx)
+                                            haystack[1:], 0, found_indx)
                 else:
                     break
         return -1
 
-
-class KMP_search:
-    """doc
-
-     forKMP_search."""
-
-    def __init__(self, haystack, needle):
-        # superKMP_search, self).__init__()
-        self.haystack = haystack
-        self.needle = needle
-
+    """
+    KMP uses partial match table which is made of n cells,
+    n being the length of the pattern.
+    It consist of proper prefix and sufix, if the
+    """
     def get_prefix_table(self, needle):
-        '''
-        Creatae a prefix table to search in the string
-        '''
+        # Creatae a prefix table to search in the string
         prefix_set = set()
         n = len(needle)
         prefix_table = [0] * n
@@ -56,18 +61,15 @@ class KMP_search:
             delimeter += 1
         return prefix_table
 
-
-    '''
-
-    '''
     def kmpSearch(self, haystack, needle):
-        '''
-        m: The position within S where the prospective match for W begins
-        i: Index of the currently considered character in W.
-        '''
+        """
+        m: The position within haystack where match for needle begins
+        i: Index of the currently considered character in the needle(pattern).
+        """
         haystack_len = len(haystack)
         needle_len = len(needle)
-        if (needle_len > haystack_len) or (not haystack_len) or (not needle_len):
+        if (needle_len > haystack_len) or (
+                not haystack_len) or (not needle_len):
             return -1
         prefix_table = self.get_prefix_table(needle)
         m = i = 0
@@ -85,21 +87,20 @@ class KMP_search:
         else:
             return -1
 
-
-class BoyerMoore(object):
-    """docstring forBoyerMoore."""
-
-    def __init__(self, haystack, needle):
-        self.haystack = haystack
-        self.needle = needle
+    """
+    Boyer–Moore algorithm searches for occurrences of needle in a haystack
+    by performing explicit character comparisons at different alignments.
+    Information gained by is used preprocessing P
+    to skip as many alignments as possible.
+    """
 
     NO_OF_CHARS = 256
 
     def badCharHeuristic(self, string, size):
-        '''
+        """
         The preprocessing function for
         Boyer Moore's bad character heuristic
-        '''
+        """
 
         # Initialize all occurrence as -1
         badChar = [-1] * self.NO_OF_CHARS
@@ -112,10 +113,10 @@ class BoyerMoore(object):
         return badChar
 
     def search(self, txt, pat):
-        '''
+        """
         A pattern searching function that uses Bad Character
         Heuristic of Boyer Moore Algorithm
-        '''
+        """
         m = len(pat)
         n = len(txt)
 
@@ -143,15 +144,12 @@ class BoyerMoore(object):
             else:
                 s += max(1, j - badChar[ord(txt[s + j])])
 
+    """
+    Rabin Karp Algorithm uses hashing
+    to find an exact match of a pattern string in a text.
+    """
 
-class RabinKarp(object):
-    """docstring for RabinKarp."""
-
-    def __init__(self, haystack, needle):
-        # superKMP_search, self).__init__()
-        self.haystack = haystack
-        self.needle = needle
-
+    # hash of a string
     def hash(self, text):
         hash_value = 0
         for i in range(0, len(text)):
@@ -159,21 +157,31 @@ class RabinKarp(object):
         return hash_value
 
     def rabinKarp(self):
-        for i in range(len(self.haystack)-len(self.needle)+1):
-            if self.hash(self.haystack[i:i+len(self.needle)]) == self.hash(self.needle):
-                if self.haystack[i:i+len(self.needle)] == self.needle:
+        for i in range(len(self.haystack) - len(self.needle) + 1):
+            if self.hash(
+                    self.haystack[i:i + len(self.needle)]
+            ) == self.hash(self.needle):
+                if self.haystack[i:i + len(self.needle)] == self.needle:
                     return i
         return -1
+
+
+def print_time(alg, obj):
+    """
+    Take the function, run it and print the time it takes to runn it
+    """
+    start = time.time()
+    obj
+    end = time.time()
+    print(alg, end)
 
 
 if __name__ == '__main__':
     needle = 'abcaby'
     haystack = 'nabxabcabcabylhghg'
-    bruteForce = BruteForce(haystack, needle, start_indx = 0, found_indx = 0)
-    kmp = KMP_search(haystack, needle)
-    boyer = BoyerMoore(haystack, needle)
-    rabin = RabinKarp(haystack, needle)
-    print(rabin.rabinKarp())
-    print(bruteForce.brute_force(haystack, needle))
-    print(boyer.search(haystack, needle))
-    print(kmp.kmpSearch(haystack, needle))
+    search = Substring_search(haystack, needle, start_indx=0, found_indx=0)
+
+    print_time("BruteForce time: ", search.brute_force(haystack, needle))
+    print_time("RabinKarp time : ", search.rabinKarp())
+    print_time("BoyerMoore time: ", search.search(haystack, needle))
+    print_time("KMP_search time: ", search.kmpSearch(haystack, needle))

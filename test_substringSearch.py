@@ -6,16 +6,40 @@ import substring_search
 class TestSubstringSearch(unittest.TestCase):
     "Unit tests for KMP_search."
 
+    search = substring_search.Substring_search("haystacklist", "stack", 0, 0)
+
+    # test case for brute force
+    def test_BruteForce(self):
+        res = self.search.brute_force("haystacklist", "stack", 0, 0)
+        self.assertEqual(
+            res, 3, "BruteForce({!r}, {!r})".format(
+                "haystacklist", "stack"))
+
+    # test case for KMP_search
     def test_KMP(self):
-        res = substring_search.KMP_search("haystacklist", "stack")
-        self.assertEqual(res, 3,
-                         "KMP_search({!r}, {!r})".format("haystacklist", "stack"))
+        res = self.search.kmpSearch("haystacklist", "stack")
+        self.assertEqual(
+            res, 3, "KMP_search({!r}, {!r})".format(
+                "haystacklist", "stack"))
 
+    # test case for Boyer Moore
     def test_boyer(self):
-        boyerFound = substring_search.search("haystacklist", "stack")
-        self.assertEqual(boyerFound, 3,
-                         "BuyerMoore_search({!r}, {!r})".format("haystacklist", "stack"))
+        boyerFound = self.search.search("haystacklist", "stack")
+        self.assertEqual(
+            boyerFound,
+            3,
+            "BoyerMoore_search({!r}, {!r})".format(
+                "haystacklist",
+                "stack"))
 
+    # test case for Rabin Karp
+    def test_RabinKarp(self):
+        res = self.search.rabinKarp()
+        self.assertEqual(
+            res, 3, "rabinKarp({!r}, {!r})".format(
+                "haystacklist", "stack"))
+
+    # Test the algorithms with random texts and patterns
     def test_randomString(self):
         for k in range(1, 100):
             # Generate a random test case with k characters.
@@ -23,7 +47,6 @@ class TestSubstringSearch(unittest.TestCase):
             start, stop = sorted(random.sample(range(k + 1), 2))
             needle = haystack[start:stop]
 
-            # Use Python's built-in str.find to compute the expected result.
             expected = []
             index = -1
             while True:
@@ -32,15 +55,15 @@ class TestSubstringSearch(unittest.TestCase):
                     break
                 expected.append(index)
 
-            # Compare with the actual result.
-            found = substring_search.KMP_search(haystack, needle)
-            self.assertEqual(found, expected[0],
+            # KMP_search
+            kmpFound = self.search.kmpSearch(haystack, needle)
+            self.assertEqual(kmpFound, expected[0],
                              "KMP_search({!r}, {!r})".format(haystack, needle))
 
-            boyerFound = substring_search.search(haystack, needle)
+            # Boyer Moore
+            boyerFound = self.search.search(haystack, needle)
             self.assertEqual(boyerFound, expected[0],
-                             "BuyerMoore_search({!r}, {!r})".format(haystack,
-                                                                    needle))
+                             "BoyerMoore({!r}, {!r})".format(haystack, needle))
 
 
 if __name__ == '__main__':
