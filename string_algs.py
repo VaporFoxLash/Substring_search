@@ -5,8 +5,8 @@ I used haystack for a full text(string) and
 needle for the pattern,
 in large files it's like finding a needle in a haystack.
 """
-import time
-
+from time import process_time
+from function_time import timer
 
 class Substring_search():
     """
@@ -14,13 +14,8 @@ class Substring_search():
     If it does, we want to know its position in the string.
     """
 
-    def __init__(self, haystack, needle, start_indx, found_indx):
-        self.haystack = haystack
-        self.needle = needle
-        self.start_indx = start_indx
-        self.found_indx = found_indx
-
-    def brute_force(self, needle, haystack, start_indx=0, found_indx=0):
+    @timer
+    def brute_force(self, needle, haystack, start_indx, found_indx):
         #
         if len(haystack) == 0:
             return found_indx
@@ -61,6 +56,7 @@ class Substring_search():
             delimeter += 1
         return prefix_table
 
+    @timer
     def kmpSearch(self, haystack, needle):
         """
         m: The position within haystack where match for needle begins
@@ -112,7 +108,8 @@ class Substring_search():
         # retun initialized list
         return badChar
 
-    def search(self, txt, pat):
+    @timer
+    def boyer_moore(self, txt, pat):
         """
         A pattern searching function that uses Bad Character
         Heuristic of Boyer Moore Algorithm
@@ -156,32 +153,23 @@ class Substring_search():
             hash_value += ord(text[i])**i
         return hash_value
 
-    def rabinKarp(self):
-        for i in range(len(self.haystack) - len(self.needle) + 1):
+    @timer
+    def rabinKarp(self, haystack, needle):
+        for i in range(len(haystack) - len(needle) + 1):
             if self.hash(
-                    self.haystack[i:i + len(self.needle)]
-            ) == self.hash(self.needle):
-                if self.haystack[i:i + len(self.needle)] == self.needle:
+                    haystack[i:i + len(needle)]
+            ) == self.hash(needle):
+                if haystack[i:i + len(needle)] == needle:
                     return i
         return -1
-
-
-def print_time(alg, obj):
-    """
-    Take the function, run it and print the time it takes to runn it
-    """
-    start = time.time()
-    obj
-    end = time.time()
-    print(alg, end)
 
 
 if __name__ == '__main__':
     needle = 'abcaby'
     haystack = 'nabxabcabcabylhghg'
-    search = Substring_search(haystack, needle, start_indx=0, found_indx=0)
+    search = Substring_search()
 
-    print_time("BruteForce time: ", search.brute_force(haystack, needle))
-    print_time("RabinKarp time : ", search.rabinKarp())
-    print_time("BoyerMoore time: ", search.search(haystack, needle))
-    print_time("KMP_search time: ", search.kmpSearch(haystack, needle))
+    print(search.brute_force(haystack, needle, 0, 0))
+    print(search.rabinKarp(haystack, needle))
+    # print_time("BoyerMoore time: ", search.search(haystack, needle))
+    # print_time("KMP_search time: ", search.kmpSearch(haystack, needle))

@@ -1,0 +1,10 @@
+Brute force is the slowest of all the algorithms I used because it can take O(k^n) to compute.
+Rabin Karp and Knuth-Morris-Pratt(KMP) can take O(n) to compute however in worst case scenario,
+KMP time complexity is O(m+n) where n is the length of the pattern
+and m is the length of the text(haystack), for Rabin Karp it's O(n+km) where k is the number of patterns.
+This additional comparison has O(m) time complexity, matching each element from window to pattern.
+Calculating hash values for each window in the text requires just O(1), so for complete text O(n).
+So the overall complexity turns out to be O(n+m).
+Rabin–Karp algorithm is inferior for single pattern searching to Knuth–Morris–Pratt algorithm
+Boyer Moore has a time complexity of O(n/m) in the best case and worst case time complexity of O(nm).
+In overall we can conclude that Boyer Moore is the most efficient algorithm.

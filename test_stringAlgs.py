@@ -1,12 +1,13 @@
 import unittest
 import random
-import substring_search
+import logging as log
+from string_algs import Substring_search
 
 
 class TestSubstringSearch(unittest.TestCase):
     "Unit tests for KMP_search."
 
-    search = substring_search.Substring_search("haystacklist", "stack", 0, 0)
+    search = Substring_search()
 
     # test case for brute force
     def test_BruteForce(self):
@@ -24,7 +25,7 @@ class TestSubstringSearch(unittest.TestCase):
 
     # test case for Boyer Moore
     def test_boyer(self):
-        boyerFound = self.search.search("haystacklist", "stack")
+        boyerFound = self.search.boyer_moore("haystacklist", "stack")
         self.assertEqual(
             boyerFound,
             3,
@@ -34,13 +35,17 @@ class TestSubstringSearch(unittest.TestCase):
 
     # test case for Rabin Karp
     def test_RabinKarp(self):
-        res = self.search.rabinKarp()
+        res = self.search.rabinKarp("haystcklist", "stack")
         self.assertEqual(
             res, 3, "rabinKarp({!r}, {!r})".format(
                 "haystacklist", "stack"))
 
     # Test the algorithms with random texts and patterns
     def test_randomString(self):
+        log.debug("check for any errors")
+        log.info("Get warnings and errors")
+        log.warning("Warning message.")
+        log.error("Error message.")
         for k in range(1, 100):
             # Generate a random test case with k characters.
             haystack = ''.join(random.choices('abc', k=k))
@@ -61,10 +66,14 @@ class TestSubstringSearch(unittest.TestCase):
                              "KMP_search({!r}, {!r})".format(haystack, needle))
 
             # Boyer Moore
-            boyerFound = self.search.search(haystack, needle)
+            boyerFound = self.search.boyer_moore(haystack, needle)
             self.assertEqual(boyerFound, expected[0],
                              "BoyerMoore({!r}, {!r})".format(haystack, needle))
 
 
 if __name__ == '__main__':
+    log.debug("Some debug message.")
+    log.info("Some info message.")
+    log.warning("Some warning message.")
+    log.error("Some error message.")
     unittest.main()
